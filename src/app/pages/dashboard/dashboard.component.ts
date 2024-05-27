@@ -15,10 +15,38 @@ export class DashboardComponent implements OnInit{
   public chartColor;
   public chartEmail;
   public chartHours;
-
+  
+  datosCartas:Object;
     ngOnInit(){
-      this.chartColor = "#FFFFFF";
+      this.datosCartas = [
+        {
+          titulo     : "Capacity",
+          valor      : "150GB",
+          icono      : "nc-globe",
+          colorIcono : "text-warning"
+        },
+        {
+          titulo     : "Capacity",
+          valor      : "150GB",
+          icono      : "nc-globe",
+          colorIcono : "text-warning"
+        },
+        {
+          titulo     : "Capacity",
+          valor      : "150GB",
+          icono      : "nc-globe",
+          colorIcono : "text-warning"
+        },
+        {
+          titulo     : "Capacity",
+          valor      : "150GB",
+          icono      : "nc-globe",
+          colorIcono : "text-warning"
+        }
+      ]
 
+      
+      this.chartColor = "#FFFFFF";
       this.canvas = document.getElementById("chartHours");
       this.ctx = this.canvas.getContext("2d");
 
