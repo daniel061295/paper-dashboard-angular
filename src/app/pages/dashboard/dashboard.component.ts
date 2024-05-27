@@ -26,23 +26,24 @@ export class DashboardComponent implements OnInit{
           colorIcono : "text-warning"
         },
         {
-          titulo     : "Capacity",
-          valor      : "150GB",
-          icono      : "nc-globe",
-          colorIcono : "text-warning"
+          titulo     : "Revenue",
+          valor      : "$ 1,345",
+          icono      : "nc-money-coins",
+          colorIcono : "text-success"
         },
         {
-          titulo     : "Capacity",
-          valor      : "150GB",
-          icono      : "nc-globe",
-          colorIcono : "text-warning"
+          titulo     : "Errors",
+          valor      : "23",
+          icono      : "nc-vector",
+          colorIcono : "text-danger"
         },
         {
-          titulo     : "Capacity",
-          valor      : "150GB",
-          icono      : "nc-globe",
-          colorIcono : "text-warning"
-        }
+          titulo     : "Followers",
+          valor      : "+45K",
+          icono      : "nc-favourite-28",
+          colorIcono : "text-primary"
+        },
+
       ]
 
       
