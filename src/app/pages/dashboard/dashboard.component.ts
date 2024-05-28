@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js';
 
+import { DatosService } from './services/datos.service';
 
 @Component({
   selector: 'dashboard-cmp',
@@ -16,8 +17,28 @@ export class DashboardComponent implements OnInit {
   public chartEmail;
   public chartHours;
 
+  response: any;
+  public data: any[] = [];
+  public dateTime: any[] = [];
+  constructor( private service: DatosService){}
+
   datosCartas: Object;
-  ngOnInit() {
+  ngOnInit(): void {
+    console.log(this);
+    this.service.getLastServ().subscribe( (result) =>{
+      this.response = result;
+      
+      // if(this.response!=null){
+      //   for(let i=0; i<this.response.length ;i++){
+      //     console.log(this.response[i]);
+      //     this.data.push(this.response[i].data);
+      //     this.dateTime.push(this.response[i].dateTime);
+          
+      //   }
+      // }
+  });
+
+
     this.datosCartas = [
       {
         titulo: "Temperatura promedio",
@@ -46,15 +67,15 @@ export class DashboardComponent implements OnInit {
 
     ]
 
-
     this.chartColor = "#FFFFFF";
     this.canvas = document.getElementById("chartHours");
     this.ctx = this.canvas.getContext("2d");
 
+
     this.chartHours = new Chart(this.ctx, {
       type: 'line',
       data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+        labels: this.dateTime,
         datasets: [
           {
             borderColor: "#f17e5d",
@@ -62,7 +83,7 @@ export class DashboardComponent implements OnInit {
             pointRadius: 0,
             pointHoverRadius: 0,
             borderWidth: 3,
-            data: [370, 394, 415, 409, 425, 445, 460, 450, 478, 484]
+            data: this.data,
           }
         ]
       },
@@ -108,6 +129,7 @@ export class DashboardComponent implements OnInit {
         },
       }
     });
+    
 
     var speedCanvas = document.getElementById("speedChart");
 
