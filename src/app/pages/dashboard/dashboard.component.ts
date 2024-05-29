@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js';
-
+import  {interval} from 'rxjs';
 import { DatosService } from './services/datos.service';
 
 @Component({
@@ -20,25 +20,11 @@ export class DashboardComponent implements OnInit {
   response: any;
   public data: any[] = [];
   public dateTime: any[] = [];
-  constructor( private service: DatosService){}
-
   datosCartas: Object;
+
+  constructor(private datosService: DatosService) { }
+
   ngOnInit(): void {
-    console.log(this);
-    this.service.getLastServ().subscribe( (result) =>{
-      this.response = result;
-      
-      // if(this.response!=null){
-      //   for(let i=0; i<this.response.length ;i++){
-      //     console.log(this.response[i]);
-      //     this.data.push(this.response[i].data);
-      //     this.dateTime.push(this.response[i].dateTime);
-          
-      //   }
-      // }
-  });
-
-
     this.datosCartas = [
       {
         titulo: "Temperatura promedio",
@@ -67,11 +53,40 @@ export class DashboardComponent implements OnInit {
 
     ]
 
+
+    interval(1000).subscribe(x=>{
+      if (this.dateTime.length < 12){
+        this.datosService.getDataServ().subscribe((result) => {
+          this.response = result;
+          if (this.response != null) {
+            for (let i = 0; i < this.response.length; i++) {
+              this.data.push(this.response[i].data);
+              this.dateTime.push(this.response[i].dateTime);
+            }
+          }
+          this.chartHours.update();  
+        });
+      }
+      else{
+        this.datosService.getLastServ().subscribe((result) => {
+          this.response = result;
+          if (this.response != null) {  
+            this.data.shift();
+            this.dateTime.shift();
+            this.data.push(this.response[0].data);
+            this.dateTime.push(this.response[0].dateTime);
+          }
+        this.chartHours.update();  
+        });  
+      }
+      console.log(this.data)
+      // console.log(this.dateTime)
+      
+    }); 
+    
     this.chartColor = "#FFFFFF";
     this.canvas = document.getElementById("chartHours");
     this.ctx = this.canvas.getContext("2d");
-
-
     this.chartHours = new Chart(this.ctx, {
       type: 'line',
       data: {
@@ -129,7 +144,11 @@ export class DashboardComponent implements OnInit {
         },
       }
     });
-    
+
+
+
+
+
 
     var speedCanvas = document.getElementById("speedChart");
 
