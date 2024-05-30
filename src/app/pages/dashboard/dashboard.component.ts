@@ -15,10 +15,13 @@ export class DashboardComponent implements OnInit {
   public ctx;
   public chartColor;
   public chartEmail;
-  public chartHours;
+  public chartTemp;
+  public chartHum;
+  public lineChart;
 
   response: any;
-  public data: any[] = [];
+  public dataTemp: any[] = [];
+  public dataHum: any[] = [];
   public dateTime: any[] = [];
   datosCartas: Object;
 
@@ -54,40 +57,45 @@ export class DashboardComponent implements OnInit {
     ]
 
 
-    interval(1000).subscribe(x=>{
+    interval(5000).subscribe(x=>{
       if (this.dateTime.length < 12){
         this.datosService.getDataServ().subscribe((result) => {
           this.response = result;
           if (this.response != null) {
             for (let i = 0; i < this.response.length; i++) {
-              this.data.push(this.response[i].data);
+              this.dataTemp.push(this.response[i].temperatura);
+              this.dataHum.push(this.response[i].humedad);
               this.dateTime.push(this.response[i].dateTime);
             }
           }
-          this.chartHours.update();  
+          this.chartTemp.update();
+          this.chartHum.update();  
+          this.lineChart.update(); 
         });
       }
       else{
         this.datosService.getLastServ().subscribe((result) => {
           this.response = result;
           if (this.response != null) {  
-            this.data.shift();
+            this.dataTemp.shift();
+            this.dataHum.shift();
             this.dateTime.shift();
-            this.data.push(this.response[0].data);
+            this.dataTemp.push(this.response[0].temperatura);
+            this.dataHum.push(this.response[0].humedad);
             this.dateTime.push(this.response[0].dateTime);
           }
-        this.chartHours.update();  
+        this.chartTemp.update(); 
+        this.chartHum.update(); 
+        this.lineChart.update(); 
         });  
       }
-      console.log(this.data)
-      // console.log(this.dateTime)
-      
+
     }); 
     
     this.chartColor = "#FFFFFF";
-    this.canvas = document.getElementById("chartHours");
+    this.canvas = document.getElementById("chartTemp");
     this.ctx = this.canvas.getContext("2d");
-    this.chartHours = new Chart(this.ctx, {
+    this.chartTemp = new Chart(this.ctx, {
       type: 'line',
       data: {
         labels: this.dateTime,
@@ -95,20 +103,23 @@ export class DashboardComponent implements OnInit {
           {
             borderColor: "#f17e5d",
             backgroundColor: "transparent",
-            pointRadius: 0,
-            pointHoverRadius: 0,
+            pointRadius: 4,
+            pointHoverRadius: 4,
             borderWidth: 3,
-            data: this.data,
+            pointBorderWidth: 8,
+            pointBorderColor: '#f17e5d',
+            data: this.dataTemp,
           }
         ]
       },
       options: {
         legend: {
-          display: false
+          display: false,
+          position: 'top'
         },
 
         tooltips: {
-          enabled: false
+          enabled: true
         },
 
         scales: {
@@ -121,7 +132,72 @@ export class DashboardComponent implements OnInit {
               //padding: 20
             },
             gridLines: {
+              drawBorder: true,
+              zeroLineColor: "#ccc",
+              color: 'rgba(255,255,255,0.05)'
+            }
+
+          }],
+
+          xAxes: [{
+            barPercentage: 1.6,
+            gridLines: {
               drawBorder: false,
+              color: 'rgba(255,255,255,0.1)',
+              zeroLineColor: "transparent",
+              display: false,
+            },
+            ticks: {
+              padding: 20,
+              fontColor: "#9f9f9f"
+            }
+          }]
+        },
+      }
+    });
+
+    this.chartColor = "#FFFFFF";
+    this.canvas = document.getElementById("chartHum");
+    this.ctx = this.canvas.getContext("2d");
+    this.chartHum = new Chart(this.ctx, {
+      type: 'line',
+      data: {
+        labels: this.dateTime,
+        datasets: [
+          {
+            borderColor: "#51CACF",
+            backgroundColor: "transparent",
+            pointRadius: 4,
+            pointHoverRadius: 4,
+            borderWidth: 3,
+            pointBorderWidth: 8,
+            pointBorderColor: '#51CACF',
+            
+            data: this.dataHum,
+          }
+        ]
+      },
+      options: {
+        legend: {
+          display: false,
+          position: 'top'
+        },
+
+        tooltips: {
+          enabled: true
+        },
+
+        scales: {
+          yAxes: [{
+
+            ticks: {
+              fontColor: "#9f9f9f",
+              beginAtZero: false,
+              maxTicksLimit: 5,
+              //padding: 20
+            },
+            gridLines: {
+              drawBorder: true,
               zeroLineColor: "#ccc",
               color: 'rgba(255,255,255,0.05)'
             }
@@ -148,12 +224,10 @@ export class DashboardComponent implements OnInit {
 
 
 
-
-
     var speedCanvas = document.getElementById("speedChart");
 
     var dataFirst = {
-      data: [0, 19, 15, 20, 30, 40, 40, 50, 25, 30, 50, 70],
+      data: this.dataTemp,
       fill: false,
       borderColor: '#f17e5d',
       backgroundColor: 'transparent',
@@ -164,7 +238,7 @@ export class DashboardComponent implements OnInit {
     };
 
     var dataSecond = {
-      data: [0, 5, 10, 12, 20, 27, 30, 34, 42, 45, 55, 63],
+      data: this.dataHum,
       fill: false,
       borderColor: '#51CACF',
       backgroundColor: 'transparent',
@@ -175,7 +249,7 @@ export class DashboardComponent implements OnInit {
     };
 
     var speedData = {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      labels: this.dateTime,
       datasets: [dataFirst, dataSecond]
     };
 
@@ -186,7 +260,7 @@ export class DashboardComponent implements OnInit {
       }
     };
 
-    var lineChart = new Chart(speedCanvas, {
+    this.lineChart = new Chart(speedCanvas, {
       type: 'line',
       hover: false,
       data: speedData,
