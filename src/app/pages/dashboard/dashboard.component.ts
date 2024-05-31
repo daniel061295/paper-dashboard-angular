@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js';
 import  {interval} from 'rxjs';
 import { DatosService } from './services/datos.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'dashboard-cmp',
@@ -18,14 +19,16 @@ export class DashboardComponent implements OnInit {
   public chartTemp;
   public chartHum;
   public lineChart;
-
+  dataResolver:any;
   response: any;
   public dataTemp: any[] = [];
   public dataHum: any[] = [];
   public dateTime: any[] = [];
   datosCartas: Object;
 
-  constructor(private datosService: DatosService) { }
+  constructor(
+    private datosService: DatosService,
+    private route:ActivatedRoute) { }
 
   ngOnInit(): void {
     this.datosCartas = [
@@ -56,40 +59,35 @@ export class DashboardComponent implements OnInit {
 
     ]
 
+    this.dataResolver = this.route.snapshot.data['dataResolver']
+    if (this.dataResolver != null) {
+      for (let i = 0; i < this.dataResolver.length; i++) {
+        this.dataTemp.push(this.dataResolver[i].temperatura);
+        this.dataHum.push(this.dataResolver[i].humedad);
+        this.dateTime.push(this.dataResolver[i].dateTime);
+      }
+    }
+
+    
 
     interval(5000).subscribe(x=>{
-      if (this.dateTime.length < 12){
-        this.datosService.getDataServ().subscribe((result) => {
-          this.response = result;
-          if (this.response != null) {
-            for (let i = 0; i < this.response.length; i++) {
-              this.dataTemp.push(this.response[i].temperatura);
-              this.dataHum.push(this.response[i].humedad);
-              this.dateTime.push(this.response[i].dateTime);
-            }
-          }
-          this.chartTemp.update();
-          this.chartHum.update();  
-          this.lineChart.update(); 
-        });
-      }
-      else{
         this.datosService.getLastServ().subscribe((result) => {
           this.response = result;
-          if (this.response != null) {  
-            this.dataTemp.shift();
-            this.dataHum.shift();
-            this.dateTime.shift();
+          if (this.response != null) { 
+            if (this.dateTime.length >= 12 ){
+              this.dataTemp.shift();
+              this.dataHum.shift();
+              this.dateTime.shift();
+            } 
+            
             this.dataTemp.push(this.response[0].temperatura);
             this.dataHum.push(this.response[0].humedad);
             this.dateTime.push(this.response[0].dateTime);
           }
-        this.chartTemp.update(); 
-        this.chartHum.update(); 
-        this.lineChart.update(); 
+          this.chartTemp.update(); 
+          this.chartHum.update(); 
+          this.lineChart.update(); 
         });  
-      }
-
     }); 
     
     this.chartColor = "#FFFFFF";
@@ -220,9 +218,6 @@ export class DashboardComponent implements OnInit {
         },
       }
     });
-
-
-
 
     var speedCanvas = document.getElementById("speedChart");
 

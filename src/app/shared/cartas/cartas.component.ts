@@ -12,6 +12,7 @@ export class CartasComponent implements OnInit {
   @Input() valor:string;
   @Input() icono:string;
   @Input() colorIcono:string;
+
   ngOnInit(): void {
   
 
