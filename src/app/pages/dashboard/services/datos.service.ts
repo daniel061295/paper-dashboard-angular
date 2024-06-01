@@ -11,11 +11,21 @@ export class DatosService {
   variableFalsa: string = "blabla"
   constructor(private http:HttpClient) { }
 
-  getDataServ() : Observable<data[]>{
-    return this.http.get<data[]>("http://localhost:8000/data_collector/getdata/");
+  getDataServ( id_nodo:string,fecha_inicio:string,fecha_fin:string) : Observable<data[]>{
+    return this.http.post<data[]>(
+      "http://localhost:8000/data_collector/getdata/",
+      {
+        "id_nodo":id_nodo,
+        "fecha_inicio":fecha_inicio,
+        "fecha_fin":fecha_fin
+      });
   }
 
-  getLastServ() : Observable<data[]>{
-    return this.http.get<data[]>("http://localhost:8000/data_collector/getlast/");
+  getLastServ(id_nodo:string) : Observable<data[]>{
+    return this.http.post<data[]>(
+      "http://localhost:8000/data_collector/getlast/",
+      {"id_nodo":id_nodo}
+    
+    );
   }
 }

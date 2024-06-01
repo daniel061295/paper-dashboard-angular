@@ -64,14 +64,14 @@ export class DashboardComponent implements OnInit {
       for (let i = 0; i < this.dataResolver.length; i++) {
         this.dataTemp.push(this.dataResolver[i].temperatura);
         this.dataHum.push(this.dataResolver[i].humedad);
-        this.dateTime.push(this.dataResolver[i].dateTime);
+        this.dateTime.push(this.dataResolver[i].date_time.split('T')[1]);
       }
     }
 
     
 
-    interval(5000).subscribe(x=>{
-        this.datosService.getLastServ().subscribe((result) => {
+    interval(30e3).subscribe(x=>{
+        this.datosService.getLastServ("0").subscribe((result) => {
           this.response = result;
           if (this.response != null) { 
             if (this.dateTime.length >= 12 ){
@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit {
             
             this.dataTemp.push(this.response[0].temperatura);
             this.dataHum.push(this.response[0].humedad);
-            this.dateTime.push(this.response[0].dateTime);
+            this.dateTime.push(this.response[0].date_time.split('T')[1]);
           }
           this.chartTemp.update(); 
           this.chartHum.update(); 
@@ -102,10 +102,10 @@ export class DashboardComponent implements OnInit {
             borderColor: "#f17e5d",
             backgroundColor: "transparent",
             pointRadius: 4,
-            pointHoverRadius: 4,
+            // pointHoverRadius: 4,
             borderWidth: 3,
-            pointBorderWidth: 8,
-            pointBorderColor: '#f17e5d',
+            // pointBorderWidth: 8,
+            pointBorderColor: 'transparent',
             data: this.dataTemp,
           }
         ]
@@ -166,10 +166,10 @@ export class DashboardComponent implements OnInit {
             borderColor: "#51CACF",
             backgroundColor: "transparent",
             pointRadius: 4,
-            pointHoverRadius: 4,
+            // pointHoverRadius: 4,
             borderWidth: 3,
-            pointBorderWidth: 8,
-            pointBorderColor: '#51CACF',
+            // pointBorderWidth: 8,
+            pointBorderColor: 'transparent',
             
             data: this.dataHum,
           }
@@ -226,7 +226,7 @@ export class DashboardComponent implements OnInit {
       fill: false,
       borderColor: '#f17e5d',
       backgroundColor: 'transparent',
-      pointBorderColor: '#f17e5d',
+      pointBorderColor: 'transparent',
       pointRadius: 4,
       pointHoverRadius: 4,
       pointBorderWidth: 8,
@@ -237,7 +237,7 @@ export class DashboardComponent implements OnInit {
       fill: false,
       borderColor: '#51CACF',
       backgroundColor: 'transparent',
-      pointBorderColor: '#51CACF',
+      pointBorderColor: 'transparent',
       pointRadius: 4,
       pointHoverRadius: 4,
       pointBorderWidth: 8

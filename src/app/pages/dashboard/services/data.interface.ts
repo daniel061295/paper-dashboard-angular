@@ -1,4 +1,4 @@
 export interface data {
     data: number
-    dateTime: string
+    date_time: string
   }
