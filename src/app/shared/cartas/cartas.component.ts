@@ -13,8 +13,18 @@ export class CartasComponent implements OnInit {
   @Input() icono:string;
   @Input() colorIcono:string;
 
-  ngOnInit(): void {
   
+  get getValor():string{
+    return this.valor;
+  }
+
+  @Input()
+  set setValor(valor:string){
+    this.valor = valor;
+  }
+
+  ngOnInit(): void {
+
 
   }
 

@@ -3,7 +3,8 @@ import Chart from 'chart.js';
 import  {interval} from 'rxjs';
 import { DatosService } from './services/datos.service';
 import { ActivatedRoute } from '@angular/router';
-
+import { formatDate } from "@angular/common";
+import { CartasComponent } from "../../shared/cartas/cartas.component"
 @Component({
   selector: 'dashboard-cmp',
   moduleId: module.id,
@@ -25,68 +26,115 @@ export class DashboardComponent implements OnInit {
   public dataHum: any[] = [];
   public dateTime: any[] = [];
   datosCartas: Object;
+  myDateToday = new Date();
+  today:string;
+  lastDate:string;
+
+  setDatosCartas(tempMax:string="0",tempProm:string="0",humMax:string="0",humProm:string="0") { 
+    this.datosCartas = [{
+        titulo: "Temperatura promedio",
+        valor: tempMax + "°C",
+        icono: "nc-globe",
+        colorIcono: "text-warning"
+      },
+      {
+        titulo: "Temperatura maxima",
+        valor: tempProm + "°C",
+        icono: "nc-money-coins",
+        colorIcono: "text-success"
+      },
+      {
+        titulo: "Humedad promedio",
+        valor: humMax + "%",
+        icono: "nc-vector",
+        colorIcono: "text-danger"
+      },
+      {
+        titulo: "Humedad maxima",
+        valor: humProm + "%",
+        icono: "nc-favourite-28",
+        colorIcono: "text-primary"
+      },
+
+    ]
+  };
+  calcularPromedio(numerosStr: string[]): string {
+    if (numerosStr.length === 0) {
+        return "0"; // o podrías lanzar un error si lo prefieres
+    }
+
+    const numeros = numerosStr.map(numero => parseFloat(numero));
+    const suma = numeros.reduce((acumulador, numero) => acumulador + numero, 0);
+    const promedio = suma / numeros.length;
+
+    return promedio.toFixed(2).toString();
+}
+encontrarMaximo(numerosStr: string[]): string {
+  if (numerosStr.length === 0) {
+      return "0"; // o podrías lanzar un error si lo prefieres
+  }
+
+  const numeros = numerosStr.map(numero => parseFloat(numero));
+  const maximo = Math.max(...numeros);
+  return maximo.toString();
+}
+
 
   constructor(
     private datosService: DatosService,
     private route:ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.datosCartas = [
-      {
-        titulo: "Temperatura promedio",
-        valor: "25°C",
-        icono: "nc-globe",
-        colorIcono: "text-warning"
-      },
-      {
-        titulo: "Temperatura maxima",
-        valor: "28°C",
-        icono: "nc-money-coins",
-        colorIcono: "text-success"
-      },
-      {
-        titulo: "Humedad promedio",
-        valor: "80%",
-        icono: "nc-vector",
-        colorIcono: "text-danger"
-      },
-      {
-        titulo: "Humedad maxima",
-        valor: "89%",
-        icono: "nc-favourite-28",
-        colorIcono: "text-primary"
-      },
+    this.setDatosCartas();
+    try {
+      this.dataResolver = this.route.snapshot.data['dataResolver']
+    }catch(e){
+      console.log(e)
+    };
 
-    ]
-
-    this.dataResolver = this.route.snapshot.data['dataResolver']
-    if (this.dataResolver != null) {
+    if (this.dataResolver != null || this.dataResolver.length != 0) {
       for (let i = 0; i < this.dataResolver.length; i++) {
         this.dataTemp.push(this.dataResolver[i].temperatura);
         this.dataHum.push(this.dataResolver[i].humedad);
-        this.dateTime.push(this.dataResolver[i].date_time.split('T')[1]);
+        this.dateTime.push(this.dataResolver[i].date_time.split('T')[1])
+        this.setDatosCartas(  this.calcularPromedio(this.dataTemp),
+                                this.encontrarMaximo(this.dataTemp),
+                                this.calcularPromedio(this.dataHum),
+                                this.encontrarMaximo(this.dataHum));;
       }
+      this.lastDate = this.dataResolver[this.dataResolver.length-1].date_time;
     }
 
     
 
-    interval(30e3).subscribe(x=>{
+    interval(15e3).subscribe(x=>{
         this.datosService.getLastServ("0").subscribe((result) => {
           this.response = result;
-          if (this.response != null) { 
-            if (this.dateTime.length >= 12 ){
-              this.dataTemp.shift();
-              this.dataHum.shift();
-              this.dateTime.shift();
-            } 
+          if (this.response != null) {
+            this.today = formatDate(this.myDateToday, 'yyyy-MM-dd','en-US');
+            if (this.response[0].date_time.split('T')[0] === this.today && this.response[0].date_time!=this.lastDate) {
+              if (this.dateTime.length >= 12 ){
+                this.dataTemp.shift();
+                this.dataHum.shift();
+                this.dateTime.shift();
+              } 
+              console.log(this.response[0].date_time);
+              console.log(this.lastDate);
+              this.dataTemp.push(this.response[0].temperatura);
+              this.dataHum.push(this.response[0].humedad);
+              this.dateTime.push(this.response[0].date_time.split('T')[1])
+              
+              this.lastDate = this.response[0].date_time;
+            }
             
-            this.dataTemp.push(this.response[0].temperatura);
-            this.dataHum.push(this.response[0].humedad);
-            this.dateTime.push(this.response[0].date_time.split('T')[1]);
           }
           this.chartTemp.update(); 
-          this.chartHum.update(); 
-          this.lineChart.update(); 
+          this.chartHum.update();
+          this.setDatosCartas(  this.calcularPromedio(this.dataTemp),
+                                this.encontrarMaximo(this.dataTemp),
+                                this.calcularPromedio(this.dataHum),
+                                this.encontrarMaximo(this.dataHum)); 
+          // this.lineChart.update(); 
         });  
     }); 
     
@@ -219,47 +267,47 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    var speedCanvas = document.getElementById("speedChart");
+    // var speedCanvas = document.getElementById("speedChart");
 
-    var dataFirst = {
-      data: this.dataTemp,
-      fill: false,
-      borderColor: '#f17e5d',
-      backgroundColor: 'transparent',
-      pointBorderColor: 'transparent',
-      pointRadius: 4,
-      pointHoverRadius: 4,
-      pointBorderWidth: 8,
-    };
+    // var dataFirst = {
+    //   data: this.dataTemp,
+    //   fill: false,
+    //   borderColor: '#f17e5d',
+    //   backgroundColor: 'transparent',
+    //   pointBorderColor: 'transparent',
+    //   pointRadius: 4,
+    //   pointHoverRadius: 4,
+    //   pointBorderWidth: 8,
+    // };
 
-    var dataSecond = {
-      data: this.dataHum,
-      fill: false,
-      borderColor: '#51CACF',
-      backgroundColor: 'transparent',
-      pointBorderColor: 'transparent',
-      pointRadius: 4,
-      pointHoverRadius: 4,
-      pointBorderWidth: 8
-    };
+    // var dataSecond = {
+    //   data: this.dataHum,
+    //   fill: false,
+    //   borderColor: '#51CACF',
+    //   backgroundColor: 'transparent',
+    //   pointBorderColor: 'transparent',
+    //   pointRadius: 4,
+    //   pointHoverRadius: 4,
+    //   pointBorderWidth: 8
+    // };
 
-    var speedData = {
-      labels: this.dateTime,
-      datasets: [dataFirst, dataSecond]
-    };
+    // var speedData = {
+    //   labels: this.dateTime,
+    //   datasets: [dataFirst, dataSecond]
+    // };
 
-    var chartOptions = {
-      legend: {
-        display: false,
-        position: 'top'
-      }
-    };
+    // var chartOptions = {
+    //   legend: {
+    //     display: false,
+    //     position: 'top'
+    //   }
+    // };
 
-    this.lineChart = new Chart(speedCanvas, {
-      type: 'line',
-      hover: false,
-      data: speedData,
-      options: chartOptions
-    });
+    // this.lineChart = new Chart(speedCanvas, {
+    //   type: 'line',
+    //   hover: false,
+    //   data: speedData,
+    //   options: chartOptions
+    // });
   }
 }
