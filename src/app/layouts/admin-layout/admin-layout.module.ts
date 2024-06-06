@@ -14,7 +14,12 @@ import { IconsComponent }           from '../../pages/icons/icons.component';
 import { MapsComponent }            from '../../pages/maps/maps.component';
 import { NotificationsComponent }   from '../../pages/notifications/notifications.component';
 import { UpgradeComponent }         from '../../pages/upgrade/upgrade.component';
-import { CartasComponent }          from '../../shared/cartas/cartas.component'
+import { CartasComponent }          from '../../shared/cartas/cartas.component';
+
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -24,6 +29,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
     NgbModule,
+
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule
+
+
 
  
   ],
@@ -37,6 +49,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MapsComponent,
     NotificationsComponent,
     CartasComponent,
+
   ]
 })
 

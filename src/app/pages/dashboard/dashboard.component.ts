@@ -4,7 +4,16 @@ import  {interval} from 'rxjs';
 import { DatosService } from './services/datos.service';
 import { ActivatedRoute } from '@angular/router';
 import { formatDate } from "@angular/common";
+
+
 import { CartasComponent } from "../../shared/cartas/cartas.component"
+
+
+import {MatInputModule} from '@angular/material/input'
+import {NativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
 @Component({
   selector: 'dashboard-cmp',
   moduleId: module.id,

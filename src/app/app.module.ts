@@ -16,6 +16,7 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 import { HttpClientModule } from '@angular/common/http'
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +34,10 @@ import { HttpClientModule } from '@angular/common/http'
     ToastrModule.forRoot(),
     FooterModule,
     FixedPluginModule,
-    HttpClientModule
+    HttpClientModule,
+    
+
+
   ],
   providers: [],
   bootstrap: [AppComponent]
