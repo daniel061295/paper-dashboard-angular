@@ -24,13 +24,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
-    NgbModule,
-
-
-
-
-
- 
+    NgbModule, 
   ],
   declarations: [
     DashboardComponent,
@@ -41,7 +35,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     IconsComponent,
     MapsComponent,
     NotificationsComponent,
-    CartasComponent,
+    CartasComponent
 
   ]
 })

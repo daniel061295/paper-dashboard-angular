@@ -6,7 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { formatDate } from "@angular/common";
 
 
-import { CartasComponent } from "../../shared/cartas/cartas.component"
+// import { CartasComponent } from "../../shared/cartas/cartas.component"
+import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -31,8 +32,9 @@ export class DashboardComponent implements OnInit {
   public dateTime: any[] = [];
   datosCartas: Object;
   myDateToday = new Date();
-  today:string;
+  today:string = formatDate(this.myDateToday, 'yyyy-MM-dd','en-US');
   lastDate:string;
+  model:NgbDateStruct;
 
   setDatosCartas(tempMax:string="0",tempProm:string="0",humMax:string="0",humProm:string="0") { 
     this.datosCartas = [{
@@ -89,6 +91,7 @@ encontrarMaximo(numerosStr: string[]): string {
     private route:ActivatedRoute) { }
 
   ngOnInit(): void {
+    console.log(this.today);
     this.setDatosCartas();
     try {
       this.dataResolver = this.route.snapshot.data['dataResolver']
@@ -122,8 +125,8 @@ encontrarMaximo(numerosStr: string[]): string {
                 this.dataHum.shift();
                 this.dateTime.shift();
               } 
-              console.log(this.response[0].date_time);
-              console.log(this.lastDate);
+              // console.log(this.response[0].date_time);
+              // console.log(this.lastDate);
               this.dataTemp.push(this.response[0].temperatura);
               this.dataHum.push(this.response[0].humedad);
               this.dateTime.push(this.response[0].date_time.split('T')[1])

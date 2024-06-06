@@ -7,48 +7,35 @@
 <div class="row">
   <div class="col-md-12">
     <div class="card ">
-      <div class="card-header ">
-        <h5 class="card-title">Temperatura</h5>
-        <p class="card-category">24 Hours performance</p>
+      <div class="card-header">
+        <div class="d-flex justify-content-between"> 
+          <h5 class="card-title mr-3">Temperatura</h5>
+          <div class="input-group col-md-3 col-sm-4 col-lg-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="nc-icon nc-calendar-60"></i>
+              </span>
+            </div>
+            <input class="form-control calendar " name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker"
+              placeholder="{{today}}" (click)="d.toggle()">
+          </div>
+        </div>
+        
       </div>
       <div class="card-body ">
         <canvas id=chartTemp width="400" height="100"></canvas>
       </div>
       <div class="card-footer ">
         <hr>
-        <div class="stats">
-          <i class="fa fa-history"></i> Updated 3 minutes ago
+        <div class="stats">  
+            <p class="card-category">24 Horas de funcionamiento</p>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-6 ">
-    <div class="card">
-      <div class="form-group pmd-textfield pmd-textfield-floating-label">
-        <div class="card-header ">
-          <label class="control-label" for="datepicker-start">Start Date</label>
-        </div>
-        <div class="card-body">
-          <input type="text" class="form-control" id="datepicker-start">
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6 ">
-    <div class="card">
-      <div class="form-group pmd-textfield pmd-textfield-floating-label">
-        <div class="card-header ">
-          <label class="control-label" for="datepicker-start">Start Date</label>
-        </div>
-        <div class="card-body">
-          <input type="text" class="form-control" id="datepicker-start">
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+
+
 <div class="row">
   <div class="col-md-12">
     <div class="card ">
