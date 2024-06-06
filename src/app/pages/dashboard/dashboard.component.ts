@@ -8,7 +8,7 @@ import { CartasComponent } from "../../shared/cartas/cartas.component"
 @Component({
   selector: 'dashboard-cmp',
   moduleId: module.id,
-  templateUrl: 'dashboard.component.html'
+  templateUrl: 'dashboard.component.html',
 })
 
 export class DashboardComponent implements OnInit {
