@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js';
-import  {interval} from 'rxjs';
+import { interval } from 'rxjs';
 import { DatosService } from './services/datos.service';
 import { ActivatedRoute } from '@angular/router';
 import { formatDate } from "@angular/common";
 
 
 // import { CartasComponent } from "../../shared/cartas/cartas.component"
-import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { text } from 'stream/consumers';
 
 
 @Component({
@@ -25,48 +26,53 @@ export class DashboardComponent implements OnInit {
   public chartTemp;
   public chartHum;
   public lineChart;
-  dataResolver:any;
+  dataResolver: any;
   response: any;
   public dataTemp: any[] = [];
   public dataHum: any[] = [];
   public dateTime: any[] = [];
+  public subscription;
+
+
   datosCartas: Object;
   myDateToday = new Date();
-  today:string = formatDate(this.myDateToday, 'yyyy-MM-dd','en-US');
-  lastDate:string;
-  model:NgbDateStruct;
+  today: string = formatDate(this.myDateToday, 'yyyy-MM-dd', 'en-US');
+  datePicked: any = this.today;
+  lastDate: string;
+  model: NgbDateStruct;
+  flagToday: boolean = true;
 
-  setDatosCartas(tempMax:string="0",tempProm:string="0",humMax:string="0",humProm:string="0") { 
+  setDatosCartas(tempMax: string = "0", tempProm: string = "0", humMax: string = "0", humProm: string = "0") {
     this.datosCartas = [{
-        titulo: "Temperatura promedio",
-        valor: tempMax + "°C",
-        icono: "nc-globe",
-        colorIcono: "text-warning"
-      },
-      {
-        titulo: "Temperatura maxima",
-        valor: tempProm + "°C",
-        icono: "nc-money-coins",
-        colorIcono: "text-success"
-      },
-      {
-        titulo: "Humedad promedio",
-        valor: humMax + "%",
-        icono: "nc-vector",
-        colorIcono: "text-danger"
-      },
-      {
-        titulo: "Humedad maxima",
-        valor: humProm + "%",
-        icono: "nc-favourite-28",
-        colorIcono: "text-primary"
-      },
+      titulo: "Temperatura promedio",
+      valor: tempMax + "°C",
+      icono: "nc-globe",
+      colorIcono: "text-warning"
+    },
+    {
+      titulo: "Temperatura maxima",
+      valor: tempProm + "°C",
+      icono: "nc-money-coins",
+      colorIcono: "text-success"
+    },
+    {
+      titulo: "Humedad promedio",
+      valor: humMax + "%",
+      icono: "nc-vector",
+      colorIcono: "text-danger"
+    },
+    {
+      titulo: "Humedad maxima",
+      valor: humProm + "%",
+      icono: "nc-favourite-28",
+      colorIcono: "text-primary"
+    },
 
     ]
   };
   calcularPromedio(numerosStr: string[]): string {
     if (numerosStr.length === 0) {
-        return "0"; // o podrías lanzar un error si lo prefieres
+      return "0"; // o podrías lanzar un error si lo prefieres
     }
 
     const numeros = numerosStr.map(numero => parseFloat(numero));
@@ -74,28 +80,120 @@ export class DashboardComponent implements OnInit {
     const promedio = suma / numeros.length;
 
     return promedio.toFixed(2).toString();
-}
-encontrarMaximo(numerosStr: string[]): string {
-  if (numerosStr.length === 0) {
-      return "0"; // o podrías lanzar un error si lo prefieres
   }
+  encontrarMaximo(numerosStr: string[]): string {
+    if (numerosStr.length === 0) {
+      return "0"; // o podrías lanzar un error si lo prefieres
+    }
 
-  const numeros = numerosStr.map(numero => parseFloat(numero));
-  const maximo = Math.max(...numeros);
-  return maximo.toString();
-}
+    const numeros = numerosStr.map(numero => parseFloat(numero));
+    const maximo = Math.max(...numeros);
+    return maximo.toString();
+  }
+  clearArray(dataArray: any[]) {
+    while (dataArray.length > 0) {
+      dataArray.pop();
+    }
+  }
 
 
   constructor(
     private datosService: DatosService,
-    private route:ActivatedRoute) { }
+    private route: ActivatedRoute) { }
+
+  pickDate() {
+    let month = this.model.month < 10 ? "0" + this.model.month : this.model.month;
+    let day = this.model.day < 10 ? "0" + this.model.day : this.model.day
+    this.datePicked = this.model.year + "-" + month + "-" + day;
+    if (this.datePicked == this.today) {
+      this.subscription.unsubscribe;
+      this.flagToday = true;
+      this.getDayData();
+      this.beginSubscription();
+
+
+
+    } else {
+      this.flagToday = false;
+      this.subscription.unsubscribe();
+      this.getDayData();
+    }
+  }
+
+  beginSubscription() {
+    this.subscription = interval(15e3).subscribe(x => {
+      this.datosService.getLastServ("0").subscribe((result) => {
+        this.response = result;
+        if (this.response != null) {
+          this.today = formatDate(this.myDateToday, 'yyyy-MM-dd', 'en-US');
+          if (this.response[0].date_time.split('T')[0] === this.today && this.response[0].date_time != this.lastDate) {
+            if (this.dateTime.length >= 48) {
+              this.dataTemp.shift();
+              this.dataHum.shift();
+              this.dateTime.shift();
+            }
+            // console.log(this.response[0].date_time);
+
+            this.dataTemp.push(this.response[0].temperatura);
+            this.dataHum.push(this.response[0].humedad);
+            this.dateTime.push(this.response[0].date_time.split('T')[1])
+
+            this.lastDate = this.response[0].date_time;
+            // console.log(this.dataTemp);
+          }
+
+        }
+        this.chartTemp.update();
+        this.chartHum.update();
+        this.setDatosCartas(this.calcularPromedio(this.dataTemp),
+          this.encontrarMaximo(this.dataTemp),
+          this.calcularPromedio(this.dataHum),
+          this.encontrarMaximo(this.dataHum));
+        // this.lineChart.update(); 
+      });
+    });
+
+  }
+  getDayData() {
+    let dateStart = this.datePicked + " 00:00:00";
+    let dateEnd = this.datePicked + " 23:59:59";
+
+    this.datosService.getDataServ("0", dateStart, dateEnd).subscribe((result) => {
+      let response = result;
+      // console.log(response);
+      if (response != null) {
+
+        this.clearArray(this.dataTemp);
+        this.clearArray(this.dataHum);
+        this.clearArray(this.dateTime);
+
+        for (let i = 0; i < response.length; i++) {
+          this.dataTemp.push(response[i].temperatura);
+          this.dataHum.push(response[i].humedad);
+          this.dateTime.push(response[i].date_time.split('T')[1])
+
+        }
+        // console.log(this.dataTemp);
+        this.setDatosCartas(this.calcularPromedio(this.dataTemp),
+          this.encontrarMaximo(this.dataTemp),
+          this.calcularPromedio(this.dataHum),
+          this.encontrarMaximo(this.dataHum));
+        this.chartTemp.update();
+        this.chartHum.update();
+        // console.log(this.dataTemp.length);
+        // console.log(this.dataHum.length);
+      }
+    });
+  }
+
+
 
   ngOnInit(): void {
     console.log(this.today);
     this.setDatosCartas();
     try {
       this.dataResolver = this.route.snapshot.data['dataResolver']
-    }catch(e){
+    } catch (e) {
       console.log(e)
     };
 
@@ -104,47 +202,20 @@ encontrarMaximo(numerosStr: string[]): string {
         this.dataTemp.push(this.dataResolver[i].temperatura);
         this.dataHum.push(this.dataResolver[i].humedad);
         this.dateTime.push(this.dataResolver[i].date_time.split('T')[1])
-        this.setDatosCartas(  this.calcularPromedio(this.dataTemp),
-                                this.encontrarMaximo(this.dataTemp),
-                                this.calcularPromedio(this.dataHum),
-                                this.encontrarMaximo(this.dataHum));;
+        this.setDatosCartas(this.calcularPromedio(this.dataTemp),
+          this.encontrarMaximo(this.dataTemp),
+          this.calcularPromedio(this.dataHum),
+          this.encontrarMaximo(this.dataHum));
       }
-      this.lastDate = this.dataResolver[this.dataResolver.length-1].date_time;
+      this.lastDate = this.dataResolver[this.dataResolver.length - 1].date_time;
     }
 
-    
 
-    interval(15e3).subscribe(x=>{
-        this.datosService.getLastServ("0").subscribe((result) => {
-          this.response = result;
-          if (this.response != null) {
-            this.today = formatDate(this.myDateToday, 'yyyy-MM-dd','en-US');
-            if (this.response[0].date_time.split('T')[0] === this.today && this.response[0].date_time!=this.lastDate) {
-              if (this.dateTime.length >= 12 ){
-                this.dataTemp.shift();
-                this.dataHum.shift();
-                this.dateTime.shift();
-              } 
-              // console.log(this.response[0].date_time);
-              // console.log(this.lastDate);
-              this.dataTemp.push(this.response[0].temperatura);
-              this.dataHum.push(this.response[0].humedad);
-              this.dateTime.push(this.response[0].date_time.split('T')[1])
-              
-              this.lastDate = this.response[0].date_time;
-            }
-            
-          }
-          this.chartTemp.update(); 
-          this.chartHum.update();
-          this.setDatosCartas(  this.calcularPromedio(this.dataTemp),
-                                this.encontrarMaximo(this.dataTemp),
-                                this.calcularPromedio(this.dataHum),
-                                this.encontrarMaximo(this.dataHum)); 
-          // this.lineChart.update(); 
-        });  
-    }); 
-    
+
+    this.beginSubscription();
+
+
+
     this.chartColor = "#FFFFFF";
     this.canvas = document.getElementById("chartTemp");
     this.ctx = this.canvas.getContext("2d");
@@ -159,16 +230,18 @@ encontrarMaximo(numerosStr: string[]): string {
             pointRadius: 4,
             // pointHoverRadius: 4,
             borderWidth: 3,
+
             // pointBorderWidth: 8,
             pointBorderColor: 'transparent',
             data: this.dataTemp,
+            label: "Temperatura [°C]"
           }
         ]
       },
       options: {
         legend: {
           display: false,
-          position: 'top'
+          position: 'right'
         },
 
         tooltips: {
@@ -225,7 +298,7 @@ encontrarMaximo(numerosStr: string[]): string {
             borderWidth: 3,
             // pointBorderWidth: 8,
             pointBorderColor: 'transparent',
-            
+
             data: this.dataHum,
           }
         ]
@@ -274,47 +347,8 @@ encontrarMaximo(numerosStr: string[]): string {
       }
     });
 
-    // var speedCanvas = document.getElementById("speedChart");
-
-    // var dataFirst = {
-    //   data: this.dataTemp,
-    //   fill: false,
-    //   borderColor: '#f17e5d',
-    //   backgroundColor: 'transparent',
-    //   pointBorderColor: 'transparent',
-    //   pointRadius: 4,
-    //   pointHoverRadius: 4,
-    //   pointBorderWidth: 8,
-    // };
-
-    // var dataSecond = {
-    //   data: this.dataHum,
-    //   fill: false,
-    //   borderColor: '#51CACF',
-    //   backgroundColor: 'transparent',
-    //   pointBorderColor: 'transparent',
-    //   pointRadius: 4,
-    //   pointHoverRadius: 4,
-    //   pointBorderWidth: 8
-    // };
-
-    // var speedData = {
-    //   labels: this.dateTime,
-    //   datasets: [dataFirst, dataSecond]
-    // };
-
-    // var chartOptions = {
-    //   legend: {
-    //     display: false,
-    //     position: 'top'
-    //   }
-    // };
-
-    // this.lineChart = new Chart(speedCanvas, {
-    //   type: 'line',
-    //   hover: false,
-    //   data: speedData,
-    //   options: chartOptions
-    // });
   }
+
 }
+
+

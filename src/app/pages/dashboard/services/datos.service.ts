@@ -9,7 +9,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class DatosService {
 
-  variableFalsa: string = "blabla"
   constructor(private http: HttpClient) { }
 
   getDataServ(id_nodo: string, fecha_inicio: string, fecha_fin: string): Observable<data[]> {
