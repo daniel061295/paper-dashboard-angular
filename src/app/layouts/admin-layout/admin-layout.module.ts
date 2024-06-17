@@ -17,6 +17,7 @@ import { UpgradeComponent }         from '../../pages/upgrade/upgrade.component'
 import { CartasComponent }          from '../../shared/cartas/cartas.component';
 
 
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
@@ -35,7 +36,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     IconsComponent,
     MapsComponent,
     NotificationsComponent,
-    CartasComponent
+
 
   ]
 })

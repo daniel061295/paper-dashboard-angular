@@ -10,6 +10,7 @@ import { NotificationsComponent } from '../../pages/notifications/notifications.
 import { UpgradeComponent } from '../../pages/upgrade/upgrade.component';
 import { dataResolverService } from 'app/pages/dashboard/resolvers/data.resolver.service';
 
+
 export const AdminLayoutRoutes: Routes = [
     { path: 'dashboard',      component: DashboardComponent, resolve:{dataResolver : dataResolverService} },
     { path: 'user',           component: UserComponent },
@@ -18,5 +19,6 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'icons',          component: IconsComponent },
     { path: 'maps',           component: MapsComponent },
     { path: 'notifications',  component: NotificationsComponent },
-    { path: 'upgrade',        component: UpgradeComponent }
+    { path: 'upgrade',        component: UpgradeComponent },
+    // { path: 'login',          component: LoginPageComponent}
 ];

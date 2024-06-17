@@ -14,6 +14,7 @@ import { AppRoutes } from './app.routing';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 
 import { HttpClientModule } from '@angular/common/http';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
 
 
 
@@ -22,9 +23,7 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     AppComponent,
     AdminLayoutComponent,
-
-
-
+    LoginPageComponent,
   ],
   imports: [
     BrowserAnimationsModule,
