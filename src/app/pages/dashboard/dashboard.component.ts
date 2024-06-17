@@ -46,25 +46,25 @@ export class DashboardComponent implements OnInit {
     this.datosCartas = [{
       titulo: "Temperatura promedio",
       valor: tempMax + "°C",
-      icono: "nc-globe",
+      icono: "tempMedia.png",
       colorIcono: "text-warning"
     },
     {
       titulo: "Temperatura maxima",
       valor: tempProm + "°C",
-      icono: "nc-money-coins",
+      icono: "tempMax.png",
       colorIcono: "text-success"
     },
     {
       titulo: "Humedad promedio",
       valor: humMax + "%",
-      icono: "nc-vector",
+      icono: "humMedia.png",
       colorIcono: "text-danger"
     },
     {
       titulo: "Humedad maxima",
       valor: humProm + "%",
-      icono: "nc-favourite-28",
+      icono: "humMax.png",
       colorIcono: "text-primary"
     },
 

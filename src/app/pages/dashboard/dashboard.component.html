@@ -6,8 +6,8 @@
           <i class="nc-icon nc-calendar-60"></i>
         </span>
       </div>
-      <input class="form-control calendar " name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker"
-        placeholder="{{today}}" (click)="d.toggle()" (closed)="pickDate()">
+      <input class="form-control calendar " name="dp" [(ngModel)]="model" ngbDatepicker #d1="ngbDatepicker"
+        placeholder="{{today}}" (click)="d1.toggle()" (closed)="pickDate()">
     </div>
   </div>
   <!-- <pre>Model: {{ model | json }}</pre> -->
@@ -59,6 +59,53 @@
 </div>
 
 
-<!-- <div class="row">
-
-</div> -->
+<div class="row d-flex justify-content-center">
+  <div class="col-md-6">
+    <div class="card ">
+      <div class="card-header text-center">
+        <h5>
+          Descargar datos en rango de fecha
+        </h5>
+      </div>
+      <div class="card-body d-flex justify-content-center">
+        <div class="col-md-6 ">
+          <div class="row ">
+            <p class="px-3 mb-1">Fecha inicial</p>
+          </div>
+          <div class="row">
+            <div class="input-group col-md-12 col-sm-12 col-lg-12">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="background-color:white">
+                  <i class="nc-icon nc-calendar-60"></i>
+                </span>
+              </div>
+              <input class="form-control calendar " name="dp" [(ngModel)]="model" ngbDatepicker #d2="ngbDatepicker"
+                placeholder="{{today}}" (click)="d2.toggle()" (closed)="pickDate()">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 ">
+          <div class="row ">
+            <p class="px-3 mb-1">Fecha final</p>
+          </div>
+          <div class="row">
+            <div class="input-group col-md-12 col-sm-12 col-lg-12">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="background-color:white">
+                  <i class="nc-icon nc-calendar-60"></i>
+                </span>
+              </div>
+              <input class="form-control calendar " name="dp" [(ngModel)]="model" ngbDatepicker #d3="ngbDatepicker"
+                placeholder="{{today}}" (click)="d3.toggle()" (closed)="pickDate()">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer d-flex justify-content-center mb-1">
+        <div class="col-md-10 ">
+          <button class="btn btn-success btn-block" >Descargar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
