@@ -36,6 +36,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     IconsComponent,
     MapsComponent,
     NotificationsComponent,
+    CartasComponent,
 
 
   ]
