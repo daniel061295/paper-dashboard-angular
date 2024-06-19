@@ -15,6 +15,7 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 
 import { HttpClientModule } from '@angular/common/http';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { FormsModule } from "@angular/forms";
 
 
 
@@ -36,6 +37,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
     FooterModule,
     FixedPluginModule,
     HttpClientModule,
+    FormsModule,
     
 
 

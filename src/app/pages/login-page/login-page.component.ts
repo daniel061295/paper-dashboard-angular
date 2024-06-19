@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { SignInService } from './services/login-service.service';
+import { answer } from './services/answer.interface';
+import { user } from './services/user.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -7,9 +11,32 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginPageComponent implements OnInit {
 
-  constructor() { }
+  answer: answer;
+  user: user = {
+    "username": "",
+    "password": ""
+  };
 
-  ngOnInit(): void {
+
+  constructor(private signIn: SignInService, private router: Router) { }
+
+
+  logIn() {
+    console.log(this.user);
+    this.signIn.signIn(this.user.username, this.user.password).subscribe((result: any) => {
+      this.answer = result;
+      console.log(this.answer);
+      this.signIn.token = this.answer.token;
+      //console.log(this.signIn.isAuth());
+      
+      if (this.signIn.isAuth()){
+        this.router.navigate(['/dashboard']);;
+      }
+    });
   }
 
+  ngOnInit(): void {
+
+
+  }
 }
