@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js';
 import { interval } from 'rxjs';
 import { DatosService } from './services/datos.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { formatDate } from "@angular/common";
 
 
 // import { CartasComponent } from "../../shared/cartas/cartas.component"
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { text } from 'stream/consumers';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({

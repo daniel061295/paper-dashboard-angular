@@ -3,6 +3,8 @@ import { SignInService } from './services/login-service.service';
 import { answer } from './services/answer.interface';
 import { user } from './services/user.interface';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: 'app-login-page',
@@ -18,21 +20,31 @@ export class LoginPageComponent implements OnInit {
   };
 
 
-  constructor(private signIn: SignInService, private router: Router) { }
+  constructor(private signIn: SignInService, private router: Router, private cookieService: CookieService,private toastr: ToastrService) { }
 
 
   logIn() {
-    console.log(this.user);
+    
     this.signIn.signIn(this.user.username, this.user.password).subscribe((result: any) => {
       this.answer = result;
-      console.log(this.answer);
-      this.signIn.token = this.answer.token;
-      //console.log(this.signIn.isAuth());
-      
-      if (this.signIn.isAuth()){
-        this.router.navigate(['/dashboard']);;
-      }
+      this.cookieService.set("token", this.answer.token,4,"/");
+      this.router.navigate(['/dashboard']);
+    }, error => {
+        this.showNotification('top','center');
     });
+  }
+  showNotification(from, align) {
+    this.toastr.warning(
+      '<span data-notify="icon" class="nc-icon nc-circle-10"></span><span data-notify="message">Usuario y/o contraseña incorrectas.</span>',
+        "",
+        {
+          timeOut: 4000,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-danger alert-with-icon",
+          positionClass: "toast-" + from + "-" + align
+        }
+      );
   }
 
   ngOnInit(): void {

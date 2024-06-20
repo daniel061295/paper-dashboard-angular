@@ -16,6 +16,7 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 import { HttpClientModule } from '@angular/common/http';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { FormsModule } from "@angular/forms";
+import { CookieService } from "ngx-cookie-service";
 
 
 
@@ -38,11 +39,9 @@ import { FormsModule } from "@angular/forms";
     FixedPluginModule,
     HttpClientModule,
     FormsModule,
-    
-
 
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

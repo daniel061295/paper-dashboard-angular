@@ -10,8 +10,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class SignInService {
 
-  token = "";
-
   constructor(private http: HttpClient) { }
 
   signIn(username: string, password: string): Observable<answer[]> {
@@ -23,5 +21,4 @@ export class SignInService {
       }
     );
   }
-  isAuth() { return this.token.length > 0;}
 }

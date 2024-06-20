@@ -13,6 +13,7 @@ import { AuthGuard } from 'app/guards/auth.guard';
 
 
 export const AdminLayoutRoutes: Routes = [
+    // { path: 'dashboard',      component: DashboardComponent, resolve:{dataResolver : dataResolverService}},
     { path: 'dashboard',      component: DashboardComponent, resolve:{dataResolver : dataResolverService}, canActivate: [AuthGuard] },
     // { path: 'user',           component: UserComponent },
     // { path: 'table',          component: TableComponent },
