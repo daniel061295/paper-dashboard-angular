@@ -10,6 +10,7 @@ import { formatDate } from "@angular/common";
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { text } from 'stream/consumers';
 import { CookieService } from 'ngx-cookie-service';
+import {Title} from "@angular/platform-browser";
 
 
 @Component({
@@ -100,7 +101,10 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private datosService: DatosService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private titleService:Title) {
+      this.titleService.setTitle("Dashboard");
+     }
 
   pickDate() {
     let month = this.model.month < 10 ? "0" + this.model.month : this.model.month;

@@ -5,6 +5,7 @@ import { user } from './services/user.interface';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from "ngx-toastr";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-login-page',
@@ -20,7 +21,9 @@ export class LoginPageComponent implements OnInit {
   };
 
 
-  constructor(private signIn: SignInService, private router: Router, private cookieService: CookieService,private toastr: ToastrService) { }
+  constructor(private signIn: SignInService, private router: Router, private cookieService: CookieService,private toastr: ToastrService, private titleService:Title) { 
+    this.titleService.setTitle("Login");
+  }
 
 
   logIn() {
