@@ -20,8 +20,8 @@ export class dataResolverService implements Resolve<any>{
         this.now = formatDate(this.myDateNow, 'yyyy-MM-dd HH:mm:ss','en-US');
         
         // this.now = this.datePipe.transform(this.myDate, 'yyyy-MM-dd hh:mm:ss');
-        console.log(this.today)
-        console.log(this.now)
+        // console.log(this.today)
+        // console.log(this.now)
         // console.log(this.now)
         
         return this.datosService.getDataServ("0",this.today,this.now);

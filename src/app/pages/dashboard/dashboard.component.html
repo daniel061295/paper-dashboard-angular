@@ -79,8 +79,8 @@
                   <i class="nc-icon nc-calendar-60"></i>
                 </span>
               </div>
-              <input class="form-control calendar " name="dp" [(ngModel)]="model" ngbDatepicker #d2="ngbDatepicker"
-                placeholder="{{today}}" (click)="d2.toggle()" (closed)="pickDate()">
+              <input class="form-control calendar " name="dp" [(ngModel)]="modelInicio" ngbDatepicker #d2="ngbDatepicker"
+                placeholder="{{today}}" (click)="d2.toggle()" (closed)="pickDateInicio()">
             </div>
           </div>
         </div>
@@ -95,15 +95,15 @@
                   <i class="nc-icon nc-calendar-60"></i>
                 </span>
               </div>
-              <input class="form-control calendar " name="dp" [(ngModel)]="model" ngbDatepicker #d3="ngbDatepicker"
-                placeholder="{{today}}" (click)="d3.toggle()" (closed)="pickDate()">
+              <input class="form-control calendar " name="dp" [(ngModel)]="modelFinal" ngbDatepicker #d3="ngbDatepicker"
+                placeholder="{{today}}" (click)="d3.toggle()" (closed)="pickDateFinal()">
             </div>
           </div>
         </div>
       </div>
       <div class="card-footer d-flex justify-content-center mb-1">
         <div class="col-md-10 ">
-          <button class="btn btn-success btn-block">Descargar</button>
+          <button class="btn btn-success btn-block" (click)="downloadData()">Descargar</button>
         </div>
       </div>
     </div>

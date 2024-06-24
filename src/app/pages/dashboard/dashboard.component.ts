@@ -12,6 +12,8 @@ import { text } from 'stream/consumers';
 import { CookieService } from 'ngx-cookie-service';
 import {Title} from "@angular/platform-browser";
 
+import * as FileSaver from 'file-saver';
+
 
 @Component({
   selector: 'dashboard-cmp',
@@ -40,8 +42,12 @@ export class DashboardComponent implements OnInit {
   myDateToday = new Date();
   today: string = formatDate(this.myDateToday, 'yyyy-MM-dd', 'en-US');
   datePicked: any = this.today;
+  datePickedInicio: any;
+  datePickedFinal: any;
   lastDate: string;
   model: NgbDateStruct;
+  modelInicio: NgbDateStruct;
+  modelFinal: NgbDateStruct;
   flagToday: boolean = true;
 
   setDatosCartas(tempMax: string = "0", tempProm: string = "0", humMax: string = "0", humProm: string = "0") {
@@ -90,7 +96,7 @@ export class DashboardComponent implements OnInit {
 
     const numeros = numerosStr.map(numero => parseFloat(numero));
     const maximo = Math.max(...numeros);
-    return maximo.toString();
+    return maximo.toFixed(2).toString();
   }
   clearArray(dataArray: any[]) {
     while (dataArray.length > 0) {
@@ -124,6 +130,18 @@ export class DashboardComponent implements OnInit {
       this.getDayData();
     }
   }
+  pickDateInicio() {
+    let month = this.modelInicio.month < 10 ? "0" + this.modelInicio.month : this.modelInicio.month;
+    let day = this.modelInicio.day < 10 ? "0" + this.modelInicio.day : this.modelInicio.day
+    this.datePickedInicio = this.modelInicio.year + "-" + month + "-" + day;
+
+  }
+  pickDateFinal() {
+    let month = this.modelFinal.month < 10 ? "0" + this.modelFinal.month : this.modelFinal.month;
+    let day = this.modelFinal.day < 10 ? "0" + this.modelFinal.day : this.modelFinal.day
+    this.datePickedFinal = this.modelFinal.year + "-" + month + "-" + day;
+
+  }
 
   beginSubscription() {
     this.subscription = interval(15e3).subscribe(x => {
@@ -137,19 +155,22 @@ export class DashboardComponent implements OnInit {
               this.dataHum.shift();
               this.dateTime.shift();
             }
-            // console.log(this.response[0].date_time);
+            // console.log(this.response[0].date_time.length);
 
             this.dataTemp.push(this.response[0].temperatura);
             this.dataHum.push(this.response[0].humedad);
             this.dateTime.push(this.response[0].date_time.split('T')[1])
 
             this.lastDate = this.response[0].date_time;
-            // console.log(this.dataTemp);
+            // console.log(this.dataTemp.length);
           }
 
         }
+
         this.chartTemp.update();
         this.chartHum.update();
+        // console.log("en el last");
+        // console.log(this.dateTime);
         this.setDatosCartas(this.calcularPromedio(this.dataTemp),
           this.encontrarMaximo(this.dataTemp),
           this.calcularPromedio(this.dataHum),
@@ -178,6 +199,7 @@ export class DashboardComponent implements OnInit {
           this.dateTime.push(response[i].date_time.split('T')[1])
 
         }
+        // console.log("De obtener el dato");
         // console.log(this.dataTemp);
         this.setDatosCartas(this.calcularPromedio(this.dataTemp),
           this.encontrarMaximo(this.dataTemp),
@@ -191,10 +213,18 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+downloadData(){
+  let dateStart = this.datePickedInicio + " 00:00:00";
+  let dateEnd = this.datePickedFinal + " 23:59:59"
+  this.datosService.downLoadData("0",dateStart,dateEnd).subscribe((result) => {
+    let blob = new Blob([result], { type: 'text/csv' });
+    FileSaver.saveAs(blob, "data.csv")
+  })
+}
 
 
   ngOnInit(): void {
-    console.log(this.today);
+    // console.log(this.today);
     this.setDatosCartas();
     try {
       this.dataResolver = this.route.snapshot.data['dataResolver']
@@ -213,9 +243,8 @@ export class DashboardComponent implements OnInit {
           this.encontrarMaximo(this.dataHum));
       }
       this.lastDate = this.dataResolver[this.dataResolver.length - 1].date_time;
+      // console.log(this.dateTime);
     }
-
-
 
     this.beginSubscription();
 
