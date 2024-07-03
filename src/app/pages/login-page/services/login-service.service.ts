@@ -14,7 +14,7 @@ export class SignInService {
 
   signIn(username: string, password: string): Observable<answer[]> {
     return this.http.post<answer[]>(
-      "http://localhost:8000/data_collector/login",
+      "http://52.207.106.88:8000/data_collector/login",
       {
         "username": username,
         "password": password
