@@ -232,7 +232,8 @@ downloadData(){
       console.log(e)
     };
 
-    if (this.dataResolver != null || this.dataResolver.length != 0) {
+    if (this.dataResolver != null && this.dataResolver.length != 0) {
+      console.log(this.dataResolver);
       for (let i = 0; i < this.dataResolver.length; i++) {
         this.dataTemp.push(this.dataResolver[i].temperatura);
         this.dataHum.push(this.dataResolver[i].humedad);
