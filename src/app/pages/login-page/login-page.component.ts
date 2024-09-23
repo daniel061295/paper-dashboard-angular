@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { SignInService } from './services/login-service.service';
 import { answer } from './services/answer.interface';
 import { user } from './services/user.interface';
@@ -21,7 +21,7 @@ export class LoginPageComponent implements OnInit {
   };
 
 
-  constructor(private signIn: SignInService, private router: Router, private cookieService: CookieService,private toastr: ToastrService, private titleService:Title) { 
+  constructor(private elementRef: ElementRef,private signIn: SignInService, private router: Router, private cookieService: CookieService,private toastr: ToastrService, private titleService:Title) { 
     this.titleService.setTitle("Login");
   }
 
@@ -50,6 +50,10 @@ export class LoginPageComponent implements OnInit {
       );
   }
 
+  ngAfterViewInit() {
+    this.elementRef.nativeElement.ownerDocument
+        .body.style.backgroundColor = '#212120';
+}
   ngOnInit(): void {
 
 
