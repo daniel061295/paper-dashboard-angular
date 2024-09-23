@@ -33,7 +33,7 @@ export class LoginPageComponent implements OnInit {
       this.cookieService.set("token", this.answer.token,4,"/");
       this.router.navigate(['/dashboard']);
     }, error => {
-        this.showNotification('top','center');
+        this.showNotification('top','right');
     });
   }
   showNotification(from, align) {

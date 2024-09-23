@@ -1,16 +1,16 @@
 <div class="d-flex justify-content-center align-items-center text-light"
-  style="height: 100vh; background-color:#212120;">
+  style="height: 100vh; background-color:#121212;">
   <!-- <form class="px-5 pb-3 pt-3 col-12 col-lg-4 col-md-6 col-sm-6 "> -->
-  <form class="form-signin px-5 pb-3 pt-3" style=" max-width: 540px; width:100% ;">
+  <form class="form-signin px-5 pb-3 pt-3" style=" max-width: 400px; width:100%; background-color:#212120; border-radius: 25% 10%;">
 
     <div class="d-flex justify-content-center ">
-      <div style="max-width: 340px; width:100% ;">
+      <div style=" width:100% ;">
         <img class="mb-2" src="assets/img/logos/LOGO_UIS_PNG.png" alt="" width="100%">
       </div>
     </div>
     <!-- Email input -->
      <div class="d-flex justify-content-center">
-       <div data-mdb-input-init class="form-outline mb-2 col-10">
+       <div data-mdb-input-init class="form-outline mb-2 col-12">
          <input type="email" id="form2Example1" class="form-control" placeholder="Email address" [(ngModel)]="user.username" required autofocus/>
          <label class="sr-only" for="form2Example1" >Username</label>
        </div>
@@ -18,16 +18,16 @@
 
     <!-- Password input -->
      <div class="d-flex justify-content-center">
-       <div data-mdb-input-init class="form-outline mb-3 col-10">
+       <div data-mdb-input-init class="form-outline mb-3 col-12">
          <input type="password" id="form2Example2" class="form-control" placeholder="Password" [(ngModel)]="user.password" required autofocus />
          <label class="sr-only" for="form2Example2">Password</label>
+         <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block col-12" (click)="logIn()" >Sign in</button>
        </div>
      </div>
 
-    <!-- Submit button -->
+    <!-- Submit button 
      <div class="d-flex justify-content-center">
-       <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block col-3" (click)="logIn()" >Sign in</button>
      </div>
-    
+    -->
   </form>
 </div>

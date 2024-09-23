@@ -18,8 +18,16 @@
 }
 
 .form-signin input[type="password"] {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
 
+button{
+    padding: 11px 0px;
+    margin-top: 0px;
+    background-color: #99CC33 !important;
+}
+button:hover{
+    background-color: #567912 !important;
+}
